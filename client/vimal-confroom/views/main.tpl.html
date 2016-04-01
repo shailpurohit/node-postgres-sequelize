@@ -3,16 +3,19 @@
 
 	<h4>{{heading}}</h4>
 
-	<form name='searchForm' ng-submit='searchRooms()' novalidate>
+	<form name='searchForm' ng-submit='searchForm.$valid && searchRooms()' novalidate>
 		<div class='row collapse'>
 			<div class='columns small-12'>
 				<label class='field-name'>Location:<span class='required'>*</span></label>
 			</div>
 			<ul>
 				<li ng-repeat='loc in locations'>
-					<input type='checkbox' id='{{loc.id}}' ng-click='checkAll(loc)' ng-model='loc.selected' /><label for='{{loc.id}}'>{{loc.name}}</label>
+					<input type='checkbox' id='{{loc.id}}' name='location' ng-click='checkAll(loc)' ng-model='loc.selected' ng-required='isLocation()'/><label for='{{loc.id}}'>{{loc.name}}</label>
 				</li>
 			</ul>
+			<span class='error-message' ng-show='searchForm.$submitted'>
+				<span ng-show='searchForm.location.$error.required'>Location is required.</span>
+			</span>
 		</div>
 		<div class='divider'></div>
 
@@ -61,10 +64,13 @@
 		<div class='row collapse'>
 			<div class='columns small-3 right-spacing'>
 				<label class='field-name'>Date:<span class='required'>*</span></label>
-				<input type='text' id='dateValue' ng-model='formData.dateValue' required/>
+				<input type='text' name='dateValue' ng-model='formData.dateValue' required/>
+				<span class='error-message' ng-show='searchForm.$submitted || searchForm.dateValue.$dirty'>
+					<span ng-show='searchForm.dateValue.$error.required'>Date is required.</span>
+				</span>
 			</div>
 			<div class='columns small-3 right-spacing'>
-				<label class='field-name'>Time:<span class='required'></span></label>
+				<label class='field-name'>Time:<span class='required'>*</span></label>
 				<div class='row collapse'>
 					<div class='columns small-4'>
 						<select id='timeHours' ng-model='formData.timeHours'>
@@ -109,18 +115,45 @@
 			</div>
 			<div class='columns small-3 right-spacing'>
 				<input type='text' name='meetingSubject' ng-model='formData.meetingSubject' required />
-				<span class='error-message' ng-show='searchForm.$submitted || searchForm.meetingSubject.$invalid && searchForm.meetingSubject.$touched'>
+				<span class='error-message' ng-show='searchForm.$submitted || searchForm.meetingSubject.$touched'>
 					<span ng-show='searchForm.meetingSubject.$error.required'>Meeting subject is required.</span>
 				</span>
 			</div>
 			<div class='columns small-6'>
-				<button type='submit' ng-click='searchRooms()'>Search</button>
-				<button ng-click='cancelSearch()'>Cancel</button>
+				<button ng-click='searchForm.$valid && searchRooms()' ng-disabled='showSearchResult'>Search</button>
+				<button ng-click='cancelSearch()' ng-disabled='!showSearchResult'>Cancel</button>
 				<button ng-click='showOccupancy()'>Show Occupancy</button>
 			</div>
 		</div>
 		<div class='divider'></div>
-
 	</form>
+</section>
 
+<section ng-class="{'search-result':showSearchResult}" ng-show='showSearchResult'>
+		<div ng-show='roomsAvailable'>
+				<label><b>Search Result:</b></label>
+				<table class='rooms-list'>
+					<thead>
+						<tr>
+							<th>Select</th>
+							<th>Room</th>
+							<th>Details</th>
+							<th>Max Capacity</th>
+							<th>-</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat='room in searchResult'>
+							<td>{{room.id}}</td>
+							<td>{{room.name}}</td>
+							<td>{{room.details}}</td>
+							<td>{{room.max_capacity}}</td>
+							<td><a href='#' ng-click='bookRoom()'>Book Now</a></td>
+						</tr>
+					</tbody>
+				</table>
+		</div>
+		<div ng-show='!roomsAvailable'>
+				<label><b>No room is available for given search</b></label>
+		</div>
 </section>

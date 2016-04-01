@@ -49,6 +49,14 @@ confRoomBooking
             searchForRooms: function(formData){
                 var deferred = $q.defer();
 
+                $http.get('data/searchResult.json')
+                    .success(function(data){
+                        deferred.resolve(data);
+                    })
+                    .error(function(reason){
+                        deferred.reject(reason);
+                    });
+                /*
                 $http.post('api/searchRoom', formData)
                     .success(function(data){
                         deferred.resolve(data);
@@ -56,6 +64,7 @@ confRoomBooking
                     .error(function(reason){
                         deferred.reject(reason);
                     });
+              */
 
                 return deferred.promise;
             }

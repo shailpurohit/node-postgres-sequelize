@@ -52,3 +52,10 @@ span.error-message {
 	color: #d44950;
 	font-size:12px;
 }
+section.search-result {
+	margin:30px 15px;
+}
+.rooms-list {
+	width: 100%;
+	margin-top: 10px;
+}

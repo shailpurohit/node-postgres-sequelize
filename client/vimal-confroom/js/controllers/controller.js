@@ -16,6 +16,14 @@ confRoomBooking.controller('confRoomCtrl', ['$scope', 'confRoomFactory', functio
     $scope.formData.timeCycle = 'AM';
     $scope.formData.durationHours = '0';
     $scope.formData.durationMinutes = '00';
+    $scope.showSearchResult = false;
+
+    //validate if atleast one location is selected
+    $scope.isLocation = function() {
+        return !$scope.locations.some(function(item){  //some method works on array, return true if any of array element has true value
+            return item.selected;
+        });
+    };
 
     //fetching the locations data
     confRoomFactory.getLocations()
@@ -110,7 +118,13 @@ confRoomBooking.controller('confRoomCtrl', ['$scope', 'confRoomFactory', functio
         //post search criteria for Rooms search
         confRoomFactory.searchForRooms($scope.formData)
             .then(function(result){
-                console.log('Result of Rooms search: '+JSON.stringify(result));
+                $scope.showSearchResult = true; //enable the cancel button and show search result
+                if(result.length > 0) { //if rooms are available then allow for book
+                    $scope.roomsAvailable = true;
+                    $scope.searchResult = result;
+                } else { //if no rooms are available then show proper message
+                    $scope.roomsAvailable = false;
+                }
             }, function(error){
                 console.log('Error in Rooms search: '+JSON.stringify(error));
             });
@@ -118,7 +132,9 @@ confRoomBooking.controller('confRoomCtrl', ['$scope', 'confRoomFactory', functio
 
     //on cancel of search rooms
     $scope.cancelSearch = function() {
-
+        //disable the cancel button and hide search result
+        $scope.showSearchResult = false;
+        $scope.searchResult = [];
     };
 
     //on showing occupancy of rooms
