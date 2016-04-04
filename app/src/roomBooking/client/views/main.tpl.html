@@ -3,7 +3,7 @@
 
 	<h4>{{heading}}</h4>
 
-	<form name='searchForm' ng-submit='searchForm.$valid && searchRooms()' novalidate>
+	<form name='searchForm'  ng-submit='searchForm.$valid && searchRooms()' novalidate>
 		<div class='row collapse'>
 			<div class='columns small-12'>
 				<label class='field-name'>Location:<span class='required'>*</span></label>
@@ -120,9 +120,9 @@
 				</span>
 			</div>
 			<div class='columns small-6'>
-				<button ng-click='searchForm.$valid && searchRooms()' ng-disabled='showSearchResult'>Search</button>
-				<button ng-click='cancelSearch()' ng-disabled='!showSearchResult'>Cancel</button>
-				<button ng-click='showOccupancy()'>Show Occupancy</button>
+				<button type='submit' ng-disabled='showSearchResult'>Search</button>
+				<button type='button' ng-click='cancelSearch()' ng-disabled='!showSearchResult'>Cancel</button>
+				<button type='button' ng-click='showOccupancy()'>Show Occupancy</button>
 			</div>
 		</div>
 		<div class='divider'></div>
@@ -148,11 +148,11 @@
 							<td>{{room.name}}</td>
 							<td>{{room.details}}</td>
 							<td>{{room.max_capacity}}</td>
-							<td><a href='#' ng-click='bookRooms(room)'>Book Now</a></td>
+							<td><a href='' ng-click='bookRooms(room)'>Book Now</a></td>
 						</tr>
 					</tbody>
 				</table>
-				<a href='#' ng-click='bookRooms()' ng-class="{'disabled-link': checkMultiRooms()}">Book Rooms</a>
+				<a href='' ng-click='bookRooms()' ng-class="{'disabled-link': checkMultiRooms()}">Book Rooms</a>
 		</div>
 		<div ng-show='!roomsAvailable'>
 				<label><b>No room is available for given search</b></label>

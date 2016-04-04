@@ -176,19 +176,26 @@ confRoomBooking.controller('confRoomCtrl', ['$scope', 'confRoomFactory', functio
         roomData.durationMinutes = $scope.formData.durationMinutes;
         roomData.meetingSubject = $scope.formData.meetingSubject;
 
+        /*
         //post book room request
         confRoomFactory.bookingRoom(roomData)
           .then(function(result){ //on success, remove particular room from search result
               angular.forEach(roomData.room_id, function(item){
-                  var index = $scope.searchResult.indexOf(item);
-                  if(index > -1) {
-                      $scope.searchResult.splice(index, 1);
-                  }
+                  $scope.searchResult = $.grep($scope.searchResult, function(data, index){
+                      return data.id != item;
+                  });
               });
               alert('Selected room(s) are booked successfully.');
           }, function(error){
               console.log('Error in Book a Room: '+JSON.stringify(error));
-          });        
+          });
+        */
+        angular.forEach(roomData.room_id, function(item){
+            $scope.searchResult = $.grep($scope.searchResult, function(data, index){
+                return data.id != item;
+            });
+        });
+        alert('Selected room(s) are booked successfully.');
     };
 
 }]);
