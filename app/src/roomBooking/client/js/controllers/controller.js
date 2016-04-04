@@ -17,6 +17,7 @@ confRoomBooking.controller('confRoomCtrl', ['$scope', 'confRoomFactory', functio
     $scope.formData.durationHours = '0';
     $scope.formData.durationMinutes = '00';
     $scope.showSearchResult = false;
+    $scope.searchResult = [];
 
     //validate if atleast one location is selected
     $scope.isLocation = function() {
@@ -151,53 +152,43 @@ confRoomBooking.controller('confRoomCtrl', ['$scope', 'confRoomFactory', functio
         return disableBooking;
     };
 
-    //on book now a single room
-    $scope.bookRoom = function(room) {
+    //on request of book room (either single or multiple)
+    $scope.bookRooms = function(room) {
         //preparing JSON for book room request
         var roomData = {};
-        roomData.room_id = room.id;
-        roomData.dateValue = formData.dateValue;
-        roomData.timeHours = formData.timeHours
-        roomData.timeMinutes = formData.timeMinutes
-        roomData.timeCycle = formData.timeCycle;
-        roomData.durationHours = formData.durationHours;
-        roomData.durationMinutes = formData.durationMinutes;
-        roomData.meetingSubject = formData.meetingSubject;
+        roomData.room_id = [];
+        if(room) { //for single room book
+            room.selected = true;
+            roomData.room_id.push(room.id)
+        }
+        else { //for multi room book
+            angular.forEach($scope.searchResult, function(item){
+                if(item.selected) {
+                    roomData.room_id.push(item.id);
+                }
+            });
+        }
+        roomData.dateValue = $scope.formData.dateValue;
+        roomData.timeHours = $scope.formData.timeHours
+        roomData.timeMinutes = $scope.formData.timeMinutes
+        roomData.timeCycle = $scope.formData.timeCycle;
+        roomData.durationHours = $scope.formData.durationHours;
+        roomData.durationMinutes = $scope.formData.durationMinutes;
+        roomData.meetingSubject = $scope.formData.meetingSubject;
 
         //post book room request
-        confRoomFactory.bookRoom(roomData)
+        confRoomFactory.bookingRoom(roomData)
           .then(function(result){ //on success, remove particular room from search result
-              var index = $scope.searchResult.indexOf(room);
-              if(index > -1) {
-                  $scope.searchResult.splice(index, 1);
-              }
-              alert('Selected room is booked successfully.');
+              angular.forEach(roomData.room_id, function(item){
+                  var index = $scope.searchResult.indexOf(item);
+                  if(index > -1) {
+                      $scope.searchResult.splice(index, 1);
+                  }
+              });
+              alert('Selected room(s) are booked successfully.');
           }, function(error){
               console.log('Error in Book a Room: '+JSON.stringify(error));
-          });
-    };
-
-    //on book of multiple rooms
-    $scope.bookMultiRooms = function() {
-        //preparing JSON for book room request
-        var roomsData = {};
-        roomsData.rooms = [];
-        roomsData.dateValue = formData.dateValue;
-        roomsData.timeHours = formData.timeHours
-        roomsData.timeMinutes = formData.timeMinutes
-        roomsData.timeCycle = formData.timeCycle;
-        roomsData.durationHours = formData.durationHours;
-        roomsData.durationMinutes = formData.durationMinutes;
-        roomsData.meetingSubject = formData.meetingSubject;
-
-        angular.forEach($scope.searchResult, function(item){
-            if(item.selected) {
-                roomsData.rooms.push(item.id);
-            }
-        });
-
-        //post multi rooms booking request
-        console.log(roomsData);
+          });        
     };
 
 }]);

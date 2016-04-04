@@ -148,11 +148,11 @@
 							<td>{{room.name}}</td>
 							<td>{{room.details}}</td>
 							<td>{{room.max_capacity}}</td>
-							<td><a href='#' ng-click='bookRoom(room)'>Book Now</a></td>
+							<td><a href='#' ng-click='bookRooms(room)'>Book Now</a></td>
 						</tr>
 					</tbody>
 				</table>
-				<a href='#' ng-click='bookMultiRooms()' ng-class="{'disabled-link': checkMultiRooms()}">Book Rooms</a>
+				<a href='#' ng-click='bookRooms()' ng-class="{'disabled-link': checkMultiRooms()}">Book Rooms</a>
 		</div>
 		<div ng-show='!roomsAvailable'>
 				<label><b>No room is available for given search</b></label>

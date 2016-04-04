@@ -69,7 +69,7 @@ confRoomBooking
                 return deferred.promise;
             },
 
-            bookRoom: function(roomJson) {
+            bookingRoom: function(roomJson) {
               var deferred = $q.defer();
 
               $http.post('/api/book-a-room', roomJson)
