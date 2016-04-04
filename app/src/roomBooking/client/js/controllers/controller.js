@@ -142,4 +142,62 @@ confRoomBooking.controller('confRoomCtrl', ['$scope', 'confRoomFactory', functio
 
     };
 
+    //enable or disable the book multi rooms link
+    $scope.checkMultiRooms = function() {
+        var disableBooking = true;
+        disableBooking = !$scope.searchResult.some(function(item){  //some method works on array, return true if any of array element has true value
+            return item.selected;
+        });
+        return disableBooking;
+    };
+
+    //on book now a single room
+    $scope.bookRoom = function(room) {
+        //preparing JSON for book room request
+        var roomData = {};
+        roomData.room_id = room.id;
+        roomData.dateValue = formData.dateValue;
+        roomData.timeHours = formData.timeHours
+        roomData.timeMinutes = formData.timeMinutes
+        roomData.timeCycle = formData.timeCycle;
+        roomData.durationHours = formData.durationHours;
+        roomData.durationMinutes = formData.durationMinutes;
+        roomData.meetingSubject = formData.meetingSubject;
+
+        //post book room request
+        confRoomFactory.bookRoom(roomData)
+          .then(function(result){ //on success, remove particular room from search result
+              var index = $scope.searchResult.indexOf(room);
+              if(index > -1) {
+                  $scope.searchResult.splice(index, 1);
+              }
+              alert('Selected room is booked successfully.');
+          }, function(error){
+              console.log('Error in Book a Room: '+JSON.stringify(error));
+          });
+    };
+
+    //on book of multiple rooms
+    $scope.bookMultiRooms = function() {
+        //preparing JSON for book room request
+        var roomsData = {};
+        roomsData.rooms = [];
+        roomsData.dateValue = formData.dateValue;
+        roomsData.timeHours = formData.timeHours
+        roomsData.timeMinutes = formData.timeMinutes
+        roomsData.timeCycle = formData.timeCycle;
+        roomsData.durationHours = formData.durationHours;
+        roomsData.durationMinutes = formData.durationMinutes;
+        roomsData.meetingSubject = formData.meetingSubject;
+
+        angular.forEach($scope.searchResult, function(item){
+            if(item.selected) {
+                roomsData.rooms.push(item.id);
+            }
+        });
+
+        //post multi rooms booking request
+        console.log(roomsData);
+    };
+
 }]);

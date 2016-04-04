@@ -7,7 +7,7 @@ confRoomBooking
             getLocations: function(){
                 var deferred = $q.defer();
 
-                $http.get('data/locations.json')
+                $http.get('/api/location')
                     .success(function(data){
                         deferred.resolve(data);
                     })
@@ -21,7 +21,7 @@ confRoomBooking
             getFacilities: function(){
                 var deferred = $q.defer();
 
-                $http.get('data/facilities.json')
+                $http.get('/api/facility')
                     .success(function(data){
                         deferred.resolve(data);
                     })
@@ -35,7 +35,7 @@ confRoomBooking
             getPurposes: function(){
                 var deferred = $q.defer();
 
-                $http.get('data/purposes.json')
+                $http.get('/api/purpose')
                     .success(function(data){
                         deferred.resolve(data);
                     })
@@ -57,7 +57,7 @@ confRoomBooking
                         deferred.reject(reason);
                     });
                 /*
-                $http.post('api/searchRoom', formData)
+                $http.post('/api/search', formData)
                     .success(function(data){
                         deferred.resolve(data);
                     })
@@ -67,6 +67,21 @@ confRoomBooking
               */
 
                 return deferred.promise;
+            },
+
+            bookRoom: function(roomJson) {
+              var deferred = $q.defer();
+
+              $http.post('/api/book-a-room', roomJson)
+                  .success(function(data){
+                      deferred.resolve(data);
+                  })
+                  .error(function(reason){
+                      deferred.reject(reason);
+                  });
+
+              return deferred.promise;
             }
+
         };
     });

@@ -10,7 +10,7 @@
 			</div>
 			<ul>
 				<li ng-repeat='loc in locations'>
-					<input type='checkbox' id='{{loc.id}}' name='location' ng-click='checkAll(loc)' ng-model='loc.selected' ng-required='isLocation()'/><label for='{{loc.id}}'>{{loc.name}}</label>
+					<input type='checkbox' id='loc_{{loc.id}}' name='location' ng-click='checkAll(loc)' ng-model='loc.selected' ng-required='isLocation()'/><label for='loc_{{loc.id}}'>{{loc.name}}</label>
 				</li>
 			</ul>
 			<span class='error-message' ng-show='searchForm.$submitted'>
@@ -144,14 +144,15 @@
 					</thead>
 					<tbody>
 						<tr ng-repeat='room in searchResult'>
-							<td>{{room.id}}</td>
+							<td><input type='checkbox' ng-model='room.selected' name='roomSelect' /></td>
 							<td>{{room.name}}</td>
 							<td>{{room.details}}</td>
 							<td>{{room.max_capacity}}</td>
-							<td><a href='#' ng-click='bookRoom()'>Book Now</a></td>
+							<td><a href='#' ng-click='bookRoom(room)'>Book Now</a></td>
 						</tr>
 					</tbody>
 				</table>
+				<a href='#' ng-click='bookMultiRooms()' ng-class="{'disabled-link': checkMultiRooms()}">Book Rooms</a>
 		</div>
 		<div ng-show='!roomsAvailable'>
 				<label><b>No room is available for given search</b></label>
