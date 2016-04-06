@@ -65,14 +65,36 @@ confRoomBooking
                     .error(function(reason){
                         deferred.reject(reason);
                     });
-                
+
+                return deferred.promise;
+            },
+
+            searchOccupancy: function(formData) {
+                var deferred = $q.defer();
+
+                $http.get('data/showOccupancy.json')
+                    .success(function(data){
+                        deferred.resolve(data);
+                    })
+                    .error(function(reason){
+                        deferred.reject(reason);
+                    });
+                /*
+                $http.post('/api/show-occupancy', formData)
+                    .success(function(data){
+                        deferred.resolve(data);
+                    })
+                    .error(function(reason){
+                        deferred.reject(reason);
+                    });
+                */
                 return deferred.promise;
             },
 
             bookingRoom: function(roomJson) {
               var deferred = $q.defer();
 
-              $http.post('/api/book-a-room', roomJson)
+              $http.post('/api/book-room', roomJson)
                   .success(function(data){
                       deferred.resolve(data);
                   })

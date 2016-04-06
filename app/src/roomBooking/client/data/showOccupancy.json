@@ -1,0 +1,19 @@
+[
+	{
+		"room_name": "Room 1",
+		"room_status": [
+			{
+				"start_time": "10:30 AM",
+				"end_time": "12:00 PM"
+			},
+			{
+				"start_time": "02:00 PM",
+				"end_time": "03:00 PM"
+			}
+		]
+	},
+	{
+		"room_name": "Room 2",
+		"room_status": []
+	}
+]

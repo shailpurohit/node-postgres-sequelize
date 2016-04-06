@@ -3,7 +3,7 @@
 
 	<h4>{{heading}}</h4>
 
-	<form name='searchForm'  ng-submit='searchForm.$valid && searchRooms()' novalidate>
+	<form name='searchForm'  ng-submit='searchForm.$valid && searchRoomDetail()' novalidate>
 		<div class='row collapse'>
 			<div class='columns small-12'>
 				<label class='field-name'>Location:<span class='required'>*</span></label>
@@ -64,7 +64,7 @@
 		<div class='row collapse'>
 			<div class='columns small-3 right-spacing'>
 				<label class='field-name'>Date:<span class='required'>*</span></label>
-				<input type='text' name='dateValue' ng-model='formData.dateValue' required/>
+				<input type='text' name='dateValue' id='datePicker' ng-model='formData.dateValue' required/>
 				<span class='error-message' ng-show='searchForm.$submitted || searchForm.dateValue.$dirty'>
 					<span ng-show='searchForm.dateValue.$error.required'>Date is required.</span>
 				</span>
@@ -122,7 +122,7 @@
 			<div class='columns small-6'>
 				<button type='submit' ng-disabled='showSearchResult'>Search</button>
 				<button type='button' ng-click='cancelSearch()' ng-disabled='!showSearchResult'>Cancel</button>
-				<button type='button' ng-click='showOccupancy()'>Show Occupancy</button>
+				<button type='button' ng-disabled='showSearchResult' ng-click="searchRoomDetail(true)">Show Occupancy</button>
 			</div>
 		</div>
 		<div class='divider'></div>
@@ -130,31 +130,55 @@
 </section>
 
 <section ng-class="{'search-result':showSearchResult}" ng-show='showSearchResult'>
-		<div ng-show='roomsAvailable'>
-				<label><b>Search Result:</b></label>
-				<table class='rooms-list'>
+		<div ng-show='!showOccupancy'>
+				<div ng-show='roomsAvailable'>
+						<label><b>Search Result:</b></label>
+						<table class='rooms-list'>
+							<thead>
+								<tr>
+									<th>Select</th>
+									<th>Room</th>
+									<th>Details</th>
+									<th>Max Capacity</th>
+									<th>-</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat='room in searchResult'>
+									<td><input type='checkbox' ng-model='room.selected' name='roomSelect' /></td>
+									<td>{{room.name}}</td>
+									<td>{{room.details}}</td>
+									<td>{{room.max_capacity}}</td>
+									<td><a href='' ng-click='bookRooms(room)'>Book Now</a></td>
+								</tr>
+							</tbody>
+						</table>
+						<a href='' ng-click='bookRooms()' ng-class="{'disabled-link': checkMultiRooms()}">Book Rooms</a>
+				</div>
+				<div ng-show='!roomsAvailable'>
+						<label><b>No room is available for given search</b></label>
+				</div>
+		</div>
+		<div ng-show='showOccupancy'>
+				<label><b>Rooms Occupany Result:</b></label>
+			 	<table class='room-list'>
 					<thead>
 						<tr>
-							<th>Select</th>
-							<th>Room</th>
-							<th>Details</th>
-							<th>Max Capacity</th>
-							<th>-</th>
+							<th>Room Name</th>
+							<th>Room Status (start_time - end_time)</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-repeat='room in searchResult'>
-							<td><input type='checkbox' ng-model='room.selected' name='roomSelect' /></td>
-							<td>{{room.name}}</td>
-							<td>{{room.details}}</td>
-							<td>{{room.max_capacity}}</td>
-							<td><a href='' ng-click='bookRooms(room)'>Book Now</a></td>
+						<tr ng-repeat='roomDetail in searchOccupancy'>
+							<td>{{roomDetail.room_name}}</td>
+							<td>
+								<ul>
+									<li ng-repeat='status in roomDetail.room_status'>
+										<span>{{status.start_time}} - {{status.end_time}}</span>
+									</li>
+								</ul>
 						</tr>
 					</tbody>
-				</table>
-				<a href='' ng-click='bookRooms()' ng-class="{'disabled-link': checkMultiRooms()}">Book Rooms</a>
-		</div>
-		<div ng-show='!roomsAvailable'>
-				<label><b>No room is available for given search</b></label>
+			 	</table>
 		</div>
 </section>

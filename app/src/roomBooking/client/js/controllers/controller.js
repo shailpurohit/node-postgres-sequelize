@@ -18,6 +18,20 @@ confRoomBooking.controller('confRoomCtrl', ['$scope', 'confRoomFactory', functio
     $scope.formData.durationMinutes = '00';
     $scope.showSearchResult = false;
     $scope.searchResult = [];
+    $scope.roomsAvailable = false;
+    $scope.searchOccupancy = [];
+    $scope.showOccupancy = false;
+
+    //get current date
+    var nowDate = new Date();
+    nowDate = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate(), 0, 0, 0, 0);
+
+    $('#datePicker').fdatepicker({
+        format: 'mm/dd/yyyy',
+        onRender: function(date) {
+            return date.valueOf() < nowDate.valueOf() ? 'disabled' : '';
+        }
+    });
 
     //validate if atleast one location is selected
     $scope.isLocation = function() {
@@ -100,7 +114,7 @@ confRoomBooking.controller('confRoomCtrl', ['$scope', 'confRoomFactory', functio
     };
 
     //on search of conference rooms
-    $scope.searchRooms = function() {
+    $scope.searchRoomDetail = function(isShowOccupancy) {
         //preparing locations array for post request
         $scope.formData.locations = [];
         angular.forEach($scope.locations, function(item){
@@ -116,31 +130,41 @@ confRoomBooking.controller('confRoomCtrl', ['$scope', 'confRoomFactory', functio
             }
         });
 
-        //post search criteria for Rooms search
-        confRoomFactory.searchForRooms($scope.formData)
-            .then(function(result){
-                $scope.showSearchResult = true; //enable the cancel button and show search result
-                if(result.length > 0) { //if rooms are available then allow for book
-                    $scope.roomsAvailable = true;
-                    $scope.searchResult = result;
-                } else { //if no rooms are available then show proper message
-                    $scope.roomsAvailable = false;
-                }
-            }, function(error){
-                console.log('Error in Rooms search: '+JSON.stringify(error));
-            });
+        if(isShowOccupancy) { //post search criteria for Show Occupancy request
+            $scope.showOccupancy = true; //to enable search room result container
+            confRoomFactory.searchOccupancy($scope.formData)
+                .then(function(result){
+                    $scope.showSearchResult = true; //enable the cancel button, disable the search button and show search result
+                    $scope.searchOccupancy = result;
+                }, function(error){
+                    console.log('Error in seaching Room Occupancy: '+JSON.stringify(error));
+                });
+        }
+        else { //post search criteria for Room search request
+            $scope.showOccupancy = false; //to enable show occpuancy result container
+            confRoomFactory.searchForRooms($scope.formData)
+                .then(function(result){
+                    $scope.showSearchResult = true; //enable the cancel button, disable the search button and show search result
+                    if(result.length > 0) { //if rooms are available then allow for book
+                        $scope.roomsAvailable = true;
+                        $scope.searchResult = result;
+                    } else { //if no rooms are available then show proper message
+                        $scope.roomsAvailable = false;
+                    }
+                }, function(error){
+                    console.log('Error in Rooms search: '+JSON.stringify(error));
+                });
+        }
     };
 
     //on cancel of search rooms
     $scope.cancelSearch = function() {
         //disable the cancel button and hide search result
         $scope.showSearchResult = false;
+        $scope.showOccupancy = false;
         $scope.searchResult = [];
-    };
-
-    //on showing occupancy of rooms
-    $scope.showOccupancy = function() {
-
+        $scope.roomsAvailable = false;
+        $scope.searchOccupancy = [];
     };
 
     //enable or disable the book multi rooms link
@@ -176,26 +200,19 @@ confRoomBooking.controller('confRoomCtrl', ['$scope', 'confRoomFactory', functio
         roomData.durationMinutes = $scope.formData.durationMinutes;
         roomData.meetingSubject = $scope.formData.meetingSubject;
 
-        /*
         //post book room request
         confRoomFactory.bookingRoom(roomData)
           .then(function(result){ //on success, remove particular room from search result
+              console.log(result);
               angular.forEach(roomData.room_id, function(item){
                   $scope.searchResult = $.grep($scope.searchResult, function(data, index){
                       return data.id != item;
                   });
               });
               alert('Selected room(s) are booked successfully.');
-          }, function(error){
+          }, function(error) {
               console.log('Error in Book a Room: '+JSON.stringify(error));
           });
-        */
-        angular.forEach(roomData.room_id, function(item){
-            $scope.searchResult = $.grep($scope.searchResult, function(data, index){
-                return data.id != item;
-            });
-        });
-        alert('Selected room(s) are booked successfully.');
     };
 
 }]);
