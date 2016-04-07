@@ -5,12 +5,12 @@ var confRoomBooking = angular.module('confRoomBooking', ['ngRoute'])
     .config(['$routeProvider', function($routeProvider){
 
         $routeProvider
-          .when('/', {
-              templateUrl: 'views/main.tpl.html',
+          .when('/roomBooking', {
+              templateUrl: 'client/views/main.tpl.html',
               controller: 'confRoomCtrl'
           })
           .otherwise({
-              redirectTo: '/'
+              redirectTo: '/roomBooking'
           });
 
     }]);
