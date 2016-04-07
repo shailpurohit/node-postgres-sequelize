@@ -7,7 +7,7 @@ confRoomBooking
             getLocations: function(){
                 var deferred = $q.defer();
 
-                $http.get('/api/location')
+                $http.get('/roombooking/api/location')
                     .success(function(data){
                         deferred.resolve(data);
                     })
@@ -21,7 +21,7 @@ confRoomBooking
             getFacilities: function(){
                 var deferred = $q.defer();
 
-                $http.get('/api/facility')
+                $http.get('/roombooking/api/facility')
                     .success(function(data){
                         deferred.resolve(data);
                     })
@@ -35,7 +35,7 @@ confRoomBooking
             getPurposes: function(){
                 var deferred = $q.defer();
 
-                $http.get('/api/purpose')
+                $http.get('/roombooking/api/purpose')
                     .success(function(data){
                         deferred.resolve(data);
                     })
@@ -49,7 +49,7 @@ confRoomBooking
             searchForRooms: function(formData){
                 var deferred = $q.defer();
 
-                $http.post('/api/search', formData)
+                $http.post('/roombooking/api/search', formData)
                     .success(function(data){
                         deferred.resolve(data);
                     })
@@ -71,7 +71,7 @@ confRoomBooking
                         deferred.reject(reason);
                     });
                 /*
-                $http.post('/api/show-occupancy', formData)
+                $http.post('/roombooking/api/show-occupancy', formData)
                     .success(function(data){
                         deferred.resolve(data);
                     })
@@ -85,7 +85,7 @@ confRoomBooking
             bookingRoom: function(roomJson) {
               var deferred = $q.defer();
 
-              $http.post('/api/book-room', roomJson)
+              $http.post('/roombooking/api/book-room', roomJson)
                   .success(function(data){
                       deferred.resolve(data);
                   })
